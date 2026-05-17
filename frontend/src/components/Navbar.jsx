@@ -8,7 +8,7 @@ const Navbar = () => {
   return (
     <nav className="glass-panel sticky top-0 z-50 rounded-none border-t-0 border-l-0 border-r-0 border-b border-white/10">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-        <Link to="/" className="flex items-center gap-3 text-primary font-bold text-2xl tracking-wide">
+        <Link to="/home" className="flex items-center gap-3 text-primary font-bold text-2xl tracking-wide">
           <img src="/logo.jpg" alt="GK Food Flow Logo" className="h-12 w-auto object-contain rounded-full shadow-lg shadow-orange-500/20" />
           <span>GK Food Flow</span>
         </Link>
@@ -21,10 +21,24 @@ const Navbar = () => {
             <ShoppingCart size={18} />
             <span>Cart ({cartCount})</span>
           </Link>
-          <Link to="/login" className="btn-primary flex items-center gap-2 text-sm py-1.5">
-            <User size={16} />
-            <span>Login</span>
-          </Link>
+          
+          {localStorage.getItem('foodflow_auth') === 'true' ? (
+            <button 
+              onClick={() => {
+                localStorage.removeItem('foodflow_auth');
+                window.location.href = '/';
+              }} 
+              className="btn-primary bg-red-500 hover:bg-red-600 shadow-red-500/20 text-white flex items-center gap-2 text-sm py-1.5 px-4"
+            >
+              <User size={16} />
+              <span>Logout</span>
+            </button>
+          ) : (
+            <Link to="/login" className="btn-primary flex items-center gap-2 text-sm py-1.5 px-4">
+              <User size={16} />
+              <span>Login</span>
+            </Link>
+          )}
         </div>
       </div>
     </nav>

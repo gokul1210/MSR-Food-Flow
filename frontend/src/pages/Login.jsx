@@ -15,12 +15,14 @@ const Login = () => {
     if (isLogin) {
       if (email === 'user@gkfoodflow.com' && password === 'gk123') {
         setError('');
+        localStorage.setItem('foodflow_auth', 'true');
         navigate('/menu');
       } else {
         setError('Invalid email or password. Please use the demo credentials.');
       }
     } else {
       // Simulate registration success
+      localStorage.setItem('foodflow_auth', 'true');
       navigate('/menu');
     }
   };
