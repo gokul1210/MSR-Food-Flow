@@ -1,17 +1,15 @@
-import { useState, useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { CheckCircle, Star, ArrowRight } from 'lucide-react';
+import { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { CheckCircle, Star, ArrowRight, Printer } from 'lucide-react';
 
 const ThankYou = () => {
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [submitted, setSubmitted] = useState(false);
   const location = useLocation();
-  const navigate = useNavigate();
 
-  // If accessed directly without an order, optionally redirect to home
-  // But for now, we'll just allow it to render a generic thank you.
-  const orderId = location.state?.orderId || Math.floor(100000 + Math.random() * 900000);
+  const orderData = location.state?.orderData;
+  const orderId = orderData?.orderId || Math.floor(100000 + Math.random() * 900000);
 
   const handleRating = (value) => {
     setRating(value);
@@ -20,25 +18,74 @@ const ThankYou = () => {
   const submitRating = () => {
     if (rating > 0) {
       setSubmitted(true);
-      // In a real app, send rating to backend here
     }
   };
 
+  const handlePrint = () => {
+    window.print();
+  };
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-[70vh] text-center space-y-6 animate-fade-in max-w-2xl mx-auto px-4">
+    <div className="flex flex-col items-center justify-center min-h-[70vh] space-y-6 animate-fade-in max-w-3xl mx-auto px-4 print:py-0 print:space-y-2">
       
       {!submitted ? (
         <>
-          <div className="bg-green-500/20 p-6 rounded-full text-green-500 mb-2 animate-bounce-slow">
+          <div className="bg-green-500/20 p-6 rounded-full text-green-500 mb-2 animate-bounce-slow print:hidden">
             <CheckCircle size={72} />
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">Order Confirmed!</h1>
-          <p className="text-gray-400 text-lg mb-8">
-            Thank you for your purchase. Your delicious food is being prepared.<br />
-            Order <span className="text-primary font-bold">#{orderId}</span>
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-2 text-center print:text-black">Order Confirmed!</h1>
+          <p className="text-gray-400 text-lg mb-4 text-center print:text-black">
+            Thank you for your purchase.<br />
+            Order <span className="text-primary font-bold print:text-black">#{orderId}</span>
           </p>
 
-          <div className="glass-panel p-8 w-full mt-4 flex flex-col items-center">
+          {/* Bill Section */}
+          {orderData && (
+            <div className="glass-panel p-8 w-full print:bg-white print:border-none print:shadow-none print:text-black print:p-0">
+              <div className="flex justify-between items-center mb-6 border-b border-white/10 pb-4 print:border-black">
+                <h2 className="text-2xl font-bold text-white print:text-black">Official Bill</h2>
+                <button 
+                  onClick={handlePrint}
+                  className="flex items-center gap-2 bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg transition-colors print:hidden"
+                >
+                  <Printer size={18} /> Print Bill
+                </button>
+              </div>
+
+              <div className="space-y-4 mb-6">
+                {orderData.items.map(item => (
+                  <div key={item.id} className="flex justify-between items-center border-b border-white/5 pb-2 print:border-gray-300">
+                    <div>
+                      <span className="font-bold print:text-black">{item.title}</span>
+                      <span className="text-gray-400 text-sm ml-2 print:text-gray-600">x{item.quantity}</span>
+                    </div>
+                    <span className="font-medium print:text-black">₹{item.price * item.quantity}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="space-y-2 text-gray-300 print:text-black">
+                <div className="flex justify-between">
+                  <span>Subtotal</span>
+                  <span>₹{orderData.subtotal.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>GST (5%)</span>
+                  <span>₹{orderData.tax.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between pt-4 border-t border-white/10 font-bold text-xl text-white print:border-black print:text-black">
+                  <span>Grand Total</span>
+                  <span className="text-primary print:text-black">₹{orderData.grandTotal.toFixed(2)}</span>
+                </div>
+              </div>
+              <div className="text-center text-sm text-gray-500 mt-6 print:text-gray-600">
+                Date: {orderData.date}
+              </div>
+            </div>
+          )}
+
+          {/* Rating Section - Hidden in Print */}
+          <div className="glass-panel p-8 w-full mt-4 flex flex-col items-center print:hidden">
             <h3 className="text-2xl font-bold text-white mb-2">How was your experience?</h3>
             <p className="text-gray-400 mb-6 text-sm">Please rate our ordering process</p>
             
@@ -73,7 +120,7 @@ const ThankYou = () => {
           </div>
         </>
       ) : (
-        <div className="glass-panel p-10 w-full flex flex-col items-center text-center animate-fade-in mt-10">
+        <div className="glass-panel p-10 w-full flex flex-col items-center text-center animate-fade-in mt-10 print:hidden">
           <div className="text-yellow-400 mb-4">
             <Star size={64} className="fill-yellow-400 mx-auto" />
           </div>

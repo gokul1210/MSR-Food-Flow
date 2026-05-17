@@ -5,6 +5,9 @@ const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
   const navigate = useNavigate();
 
+  const [email, setEmail] = useState('user@gkfoodflow.com');
+  const [password, setPassword] = useState('gk123');
+
   const handleSubmit = (e) => {
     e.preventDefault();
     // Simulate authentication
@@ -14,7 +17,7 @@ const Login = () => {
   return (
     <div className="flex items-center justify-center min-h-[70vh]">
       <div className="glass-panel p-8 w-full max-w-md">
-        <div className="text-center mb-8">
+        <div className="text-center mb-6">
           <h2 className="text-3xl font-bold text-primary mb-2">
             {isLogin ? 'Welcome Back' : 'Create Account'}
           </h2>
@@ -22,6 +25,14 @@ const Login = () => {
             {isLogin ? 'Enter your credentials to continue' : 'Sign up for a new account'}
           </p>
         </div>
+
+        {isLogin && (
+          <div className="mb-6 p-3 bg-blue-500/10 border border-blue-500/30 rounded-lg text-sm text-blue-200 text-center">
+            <p className="font-semibold mb-1">Demo Credentials</p>
+            <p>Email: <span className="text-white font-mono">user@gkfoodflow.com</span></p>
+            <p>Password: <span className="text-white font-mono">gk123</span></p>
+          </div>
+        )}
 
         <form className="space-y-4" onSubmit={handleSubmit}>
           {!isLogin && (
@@ -38,6 +49,8 @@ const Login = () => {
             <label className="block text-sm font-medium mb-1 text-gray-300">Email Address</label>
             <input 
               type="email" 
+              value={isLogin ? email : ''}
+              onChange={(e) => isLogin && setEmail(e.target.value)}
               className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-primary transition-colors"
               placeholder="you@example.com"
             />
@@ -46,6 +59,8 @@ const Login = () => {
             <label className="block text-sm font-medium mb-1 text-gray-300">Password</label>
             <input 
               type="password" 
+              value={isLogin ? password : ''}
+              onChange={(e) => isLogin && setPassword(e.target.value)}
               className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-primary transition-colors"
               placeholder="••••••••"
             />

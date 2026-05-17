@@ -8,13 +8,20 @@ const Cart = () => {
   const navigate = useNavigate();
 
   const tax = cartTotal * 0.05;
-  const deliveryFee = cartTotal > 500 || cartTotal === 0 ? 0 : 40;
-  const grandTotal = cartTotal + tax + deliveryFee;
+  const grandTotal = cartTotal + tax;
 
   const handleCheckout = () => {
     const orderId = Math.floor(100000 + Math.random() * 900000);
+    const orderData = {
+      orderId,
+      items: [...cart],
+      subtotal: cartTotal,
+      tax,
+      grandTotal,
+      date: new Date().toLocaleString()
+    };
     clearCart();
-    navigate('/thank-you', { state: { orderId } });
+    navigate('/thank-you', { state: { orderData } });
   };
 
   if (cart.length === 0) {
@@ -85,10 +92,6 @@ const Cart = () => {
               <div className="flex justify-between">
                 <span>GST (5%)</span>
                 <span>₹{tax.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Delivery Fee</span>
-                <span>{deliveryFee === 0 ? <span className="text-green-400">Free</span> : `₹${deliveryFee.toFixed(2)}`}</span>
               </div>
               <div className="pt-4 border-t border-white/10 flex justify-between items-center">
                 <span className="text-lg text-white font-bold">Total</span>
