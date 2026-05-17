@@ -7,11 +7,22 @@ const Login = () => {
 
   const [email, setEmail] = useState('user@gkfoodflow.com');
   const [password, setPassword] = useState('gk123');
+  const [error, setError] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Simulate authentication
-    navigate('/menu');
+    
+    if (isLogin) {
+      if (email === 'user@gkfoodflow.com' && password === 'gk123') {
+        setError('');
+        navigate('/menu');
+      } else {
+        setError('Invalid email or password. Please use the demo credentials.');
+      }
+    } else {
+      // Simulate registration success
+      navigate('/menu');
+    }
   };
 
   return (
@@ -31,6 +42,12 @@ const Login = () => {
             <p className="font-semibold mb-1">Demo Credentials</p>
             <p>Email: <span className="text-white font-mono">user@gkfoodflow.com</span></p>
             <p>Password: <span className="text-white font-mono">gk123</span></p>
+          </div>
+        )}
+
+        {error && (
+          <div className="mb-6 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-sm text-red-400 text-center">
+            {error}
           </div>
         )}
 

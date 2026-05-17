@@ -16,6 +16,7 @@ const Navbar = () => {
           <Link to="/menu" className="nav-link">Menu</Link>
           <Link to="/booking" className="nav-link">Book Table</Link>
           <Link to="/orders" className="nav-link">My Orders</Link>
+          
           <Link to="/cart" className="nav-link flex items-center gap-1">
             <ShoppingCart size={18} />
             <span>Cart ({cartCount})</span>
