@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microservices Architecture - Food Ordering</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h2 class="subtitle">DETAILED WORKFLOW:</h2>
+            <h1 class="title">MICROSERVICES-BASED ONLINE<br>FOOD ORDERING APPLICATION</h1>
+            <div class="divider"></div>
+        </header>
+
+        <section class="workflow-section section-1">
+            <div class="section-header">
+                <div class="badge badge-green">1</div>
+                <h3>USER INTERACTION & AUTHENTICATION</h3>
+            </div>
+            <p class="section-desc">Browse Menu, Login, Place Order</p>
+            <div class="content flex-between" style="justify-content: flex-start; gap: 2rem; margin-top: 1.5rem;">
+                <div class="user-device">
+                    <i class="fa-solid fa-mobile-screen user-icon"></i>
+                    <i class="fa-solid fa-user user-icon-small" style="color: white; background: #1a1c23;"></i>
+                </div>
+                <div style="flex-grow: 1; position: relative; display: flex; align-items: center;">
+                    <div style="height: 2px; background: var(--green-color); width: 100%; position: relative;">
+                        <i class="fa-solid fa-caret-right" style="position: absolute; right: -5px; top: -7px; color: var(--green-color); font-size: 1.2rem;"></i>
+                    </div>
+                </div>
+                <div class="box box-green" style="min-width: 150px;">
+                    <h4>Frontend App</h4>
+                    <p style="font-size: 0.8rem; font-weight: normal; margin-top: 0.3rem;">(HTML/CSS/JS)</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="vertical-connection">
+            <div class="arrow-line"></div>
+        </div>
+
+        <section class="workflow-section section-2">
+            <div class="section-header">
+                <div class="badge badge-blue">2</div>
+                <h3>FRONTEND-BACKEND COMMUNICATION via REST APIs</h3>
+            </div>
+            <div class="content flex-between" style="margin-top: 1.5rem;">
+                <p class="section-desc left-align" style="flex: 1;">Standardized request<br>routing and data formats</p>
+                <div class="box box-blue" style="flex: 1; max-width: 200px;">
+                    <h4>API GATEWAY</h4>
+                </div>
+                <div class="gateway-icon" style="flex: 1; text-align: right;">
+                    <i class="fa-solid fa-network-wired"></i>
+                </div>
+            </div>
+            <div class="api-routes flex-between" style="margin-top: 1.5rem;">
+                <span class="route">GET /menu</span>
+                <span class="route">STATUS /menu</span>
+                <span class="route">POST /order</span>
+            </div>
+        </section>
+
+        <div class="vertical-connections-multi">
+            <div class="arrow-line"></div>
+            <div class="arrow-line"></div>
+            <div class="arrow-line"></div>
+        </div>
+
+        <section class="workflow-section section-3">
+            <div class="section-header">
+                <div class="badge badge-orange">3</div>
+                <h3>MICROSERVICES CORE LOGIC</h3>
+            </div>
+            <div class="services-container">
+                <div class="service-column">
+                    <div class="box box-orange">
+                        <h4>1. USER<br>SERVICE</h4>
+                        <ul>
+                            <li>Profile</li>
+                            <li>Auth</li>
+                        </ul>
+                    </div>
+                    <div class="db-connection">
+                        <i class="fa-solid fa-arrows-up-down"></i>
+                    </div>
+                    <div class="database db-orange">
+                        <i class="fa-solid fa-database"></i>
+                        <span>USER DB</span>
+                    </div>
+                </div>
+
+                <div class="service-column">
+                    <div class="box box-orange">
+                        <h4>2. PRODUCT<br>SERVICE</h4>
+                        <ul>
+                            <li>Menu</li>
+                            <li>Inventory</li>
+                        </ul>
+                    </div>
+                    <div class="db-connection">
+                        <i class="fa-solid fa-arrows-up-down"></i>
+                    </div>
+                    <div class="database db-orange">
+                        <i class="fa-solid fa-database"></i>
+                        <span>PRODUCT DB</span>
+                    </div>
+                </div>
+
+                <div class="service-column">
+                    <div class="box box-orange">
+                        <h4>3. ORDER<br>SERVICE</h4>
+                        <ul>
+                            <li>Placement</li>
+                            <li>Status</li>
+                        </ul>
+                    </div>
+                    <div class="db-connection">
+                        <i class="fa-solid fa-arrows-up-down"></i>
+                    </div>
+                    <div class="database db-orange">
+                        <i class="fa-solid fa-database"></i>
+                        <span>ORDER DB</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="vertical-connection">
+            <div class="arrow-line"></div>
+        </div>
+
+        <section class="workflow-section section-4">
+            <div class="section-header">
+                <div class="badge badge-purple">4</div>
+                <h3>ORDER PROCESSING & STATUS UPDATES</h3>
+            </div>
+            <div class="steps-container">
+                <div class="step box box-purple">Order<br>Created</div>
+                <div class="step-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                <div class="step box box-purple">Kitchen/<br>Preparation</div>
+                <div class="step-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                <div class="step box box-purple">Out for<br>Delivery</div>
+                <div class="step-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                <div class="step box box-purple">Delivered</div>
+            </div>
+            <p class="section-desc bottom-align" style="margin-top: 1.5rem;">Real-Time Status Updates (WebSocket/Polling)</p>
+        </section>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
