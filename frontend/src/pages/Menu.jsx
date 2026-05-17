@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ShoppingBag, Leaf, Drumstick, Star, Heart, Search } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 
@@ -139,6 +139,18 @@ const Menu = () => {
   const [vegOnly, setVegOnly] = useState(false);
   const [wishlist, setWishlist] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [products, setProducts] = useState(mockProducts);
+
+  useEffect(() => {
+    // Check if menu is in localStorage
+    const savedMenu = localStorage.getItem('foodflow_menu');
+    if (savedMenu) {
+      setProducts(JSON.parse(savedMenu));
+    } else {
+      // Initialize with default mockProducts
+      localStorage.setItem('foodflow_menu', JSON.stringify(mockProducts));
+    }
+  }, []);
 
   const { addToCart } = useCart();
 
@@ -148,7 +160,7 @@ const Menu = () => {
     setWishlist(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
   };
 
-  const filteredProducts = mockProducts.filter(p => {
+  const filteredProducts = products.filter(p => {
     const matchCategory = activeCategory === 'All' || p.category === activeCategory;
     const matchSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase());
     const matchVeg = vegOnly ? p.isVeg : true;

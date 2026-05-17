@@ -20,6 +20,11 @@ const Cart = () => {
       grandTotal,
       date: new Date().toLocaleString()
     };
+
+    // Save to Order History (LocalStorage)
+    const existingOrders = JSON.parse(localStorage.getItem('foodflow_orders')) || [];
+    localStorage.setItem('foodflow_orders', JSON.stringify([...existingOrders, orderData]));
+
     clearCart();
     navigate('/thank-you', { state: { orderData } });
   };

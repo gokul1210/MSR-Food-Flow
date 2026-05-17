@@ -6,6 +6,9 @@ import Menu from './pages/Menu';
 import Login from './pages/Login';
 import Cart from './pages/Cart';
 import ThankYou from './pages/ThankYou';
+import OrderHistory from './pages/OrderHistory';
+import TableBooking from './pages/TableBooking';
+import AdminDashboard from './pages/AdminDashboard';
 
 function App() {
   return (
@@ -19,6 +22,9 @@ function App() {
             <Route path="/cart" element={<Cart />} />
             <Route path="/login" element={<Login />} />
             <Route path="/thank-you" element={<ThankYou />} />
+            <Route path="/orders" element={<OrderHistory />} />
+            <Route path="/booking" element={<TableBooking />} />
+            <Route path="/admin" element={<AdminDashboard />} />
           </Routes>
         </main>
         <Footer />
