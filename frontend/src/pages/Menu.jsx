@@ -71,8 +71,8 @@ const mockProducts = [
   { id: 112, title: 'Masala Tea', category: 'Breakfast', price: 30, isVeg: true, rating: 4.7, image: images['Masala Tea'] },
 
   // LUNCH
-  { id: 201, title: 'Chicken Biryani', category: 'Lunch', price: 250, isVeg: false, rating: 4.9, image: images['Chicken Biryani'] },
-  { id: 202, title: 'Mutton Biryani', category: 'Lunch', price: 350, isVeg: false, rating: 4.8, image: images['Mutton Biryani'] },
+  { id: 201, title: 'Chicken Biryani', category: 'Lunch', price: 350, isVeg: false, rating: 4.9, image: images['Chicken Biryani'] },
+  { id: 202, title: 'Mutton Biryani', category: 'Lunch', price: 450, isVeg: false, rating: 4.8, image: images['Mutton Biryani'] },
   { id: 203, title: 'Veg Meals', category: 'Lunch', price: 150, isVeg: true, rating: 4.5, image: images['Veg Meals'] },
   { id: 204, title: 'South Indian Meals', category: 'Lunch', price: 180, isVeg: true, rating: 4.7, image: images['South Indian Meals'] },
   { id: 205, title: 'Butter Chicken', category: 'Lunch', price: 300, isVeg: false, rating: 4.9, image: images['Butter Chicken'] },
@@ -83,23 +83,23 @@ const mockProducts = [
   { id: 210, title: 'Naan & Curry Combos', category: 'Lunch', price: 220, isVeg: true, rating: 4.5, image: images['Naan & Curry Combos'] },
 
   // DINNER
-  
+
   { id: 307, title: 'Noodles', category: 'Dinner', price: 180, isVeg: true, rating: 4.3, image: images['Noodles'] },
   { id: 308, title: 'Gobi Manchurian', category: 'Dinner', price: 190, isVeg: true, rating: 4.5, image: images['Gobi Manchurian'] },
-  { id: 309, title: 'BBQ Combo Meals', category: 'Dinner', price: 450, isVeg: false, rating: 4.8, image: images['BBQ Combo Meals'] },
-  { id: 101, title: 'Idli', category: 'Dinner', price: 40, isVeg: true, rating: 4.5, image: images['Idli'] },
-  { id: 102, title: 'Dosa', category: 'Dinner', price: 60, isVeg: true, rating: 4.6, image: images['Dosa'] },
-  { id: 103, title: 'Masala Dosa', category: 'Dinner', price: 90, isVeg: true, rating: 4.8, image: images['Masala Dosa'] },
-  { id: 301, title: 'Tandoori Chicken', category: 'Dinner', price: 350, isVeg: false, rating: 4.9, image: images['Tandoori Chicken'] },
-  { id: 302, title: 'Grill Chicken', category: 'Dinner', price: 340, isVeg: false, rating: 4.7, image: images['Grill Chicken'] },
+  { id: 309, title: 'BBQ Combo Meals', category: 'Dinner', price: 650, isVeg: false, rating: 4.8, image: images['BBQ Combo Meals'] },
+  { id: 101, title: 'Idli', category: 'Dinner', price: 80, isVeg: true, rating: 4.5, image: images['Idli'] },
+  { id: 102, title: 'Dosa', category: 'Dinner', price: 70, isVeg: true, rating: 4.6, image: images['Dosa'] },
+  { id: 103, title: 'Masala Dosa', category: 'Dinner', price: 80, isVeg: true, rating: 4.8, image: images['Masala Dosa'] },
+  { id: 301, title: 'Tandoori Chicken', category: 'Dinner', price: 750, isVeg: false, rating: 4.9, image: images['Tandoori Chicken'] },
+  { id: 302, title: 'Grill Chicken', category: 'Dinner', price: 750, isVeg: false, rating: 4.7, image: images['Grill Chicken'] },
   { id: 303, title: 'Kadai Paneer', category: 'Dinner', price: 250, isVeg: true, rating: 4.6, image: images['Kadai Paneer'] },
   { id: 304, title: 'Chicken Tikka', category: 'Dinner', price: 280, isVeg: false, rating: 4.8, image: images['Chicken Tikka'] },
   { id: 305, title: 'Parotta with Salna', category: 'Dinner', price: 150, isVeg: true, rating: 4.7, image: images['Parotta with Salna'] },
-  { id: 306, title: 'Chilli Chicken', category: 'Dinner', price: 220, isVeg: false, rating: 4.6, image: images['Chilli Chicken'] },
-  { id: 104, title: 'Pongal', category: 'Dinner', price: 70, isVeg: true, rating: 4.4, image: images['Pongal'] },
+  { id: 306, title: 'Chilli Chicken', category: 'Dinner', price: 440, isVeg: false, rating: 4.6, image: images['Chilli Chicken'] },
+  { id: 104, title: 'Pongal', category: 'Dinner', price: 90, isVeg: true, rating: 4.4, image: images['Pongal'] },
   { id: 105, title: 'Poori Masala', category: 'Dinner', price: 80, isVeg: true, rating: 4.7, image: images['Poori Masala'] },
   { id: 106, title: 'Vada', category: 'Dinner', price: 30, isVeg: true, rating: 4.5, image: images['Vada'] },
-  { id: 107, title: 'Upma', category: 'Dinner', price: 50, isVeg: true, rating: 4.1, image: images['Upma'] },
+  { id: 107, title: 'Upma', category: 'Dinner', price: 80, isVeg: true, rating: 4.1, image: images['Upma'] },
   { id: 108, title: 'Appam', category: 'Dinner', price: 60, isVeg: true, rating: 4.6, image: images['Appam'] },
   { id: 109, title: 'Paratha', category: 'Dinner', price: 50, isVeg: true, rating: 4.5, image: images['Paratha'] },
   { id: 110, title: 'Chole Bhature', category: 'Dinner', price: 120, isVeg: true, rating: 4.9, image: images['Chole Bhature'] },
@@ -169,7 +169,7 @@ const Menu = () => {
 
   const itemsPerPage = 12;
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
-  
+
   const currentProducts = filteredProducts.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
