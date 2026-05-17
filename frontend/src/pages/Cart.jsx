@@ -1,58 +1,21 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Trash2, Plus, Minus, ArrowRight, ShoppingBag, CheckCircle } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Trash2, Plus, Minus, ArrowRight, ShoppingBag } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 
 const Cart = () => {
   const { cart, removeFromCart, updateQuantity, clearCart, cartTotal } = useCart();
-  const [lastOrder, setLastOrder] = useState(null);
+  const navigate = useNavigate();
 
   const tax = cartTotal * 0.05;
   const deliveryFee = cartTotal > 500 || cartTotal === 0 ? 0 : 40;
   const grandTotal = cartTotal + tax + deliveryFee;
 
   const handleCheckout = () => {
-    setLastOrder({
-      items: [...cart],
-      total: grandTotal,
-      date: new Date().toLocaleString(),
-      orderId: Math.floor(100000 + Math.random() * 900000)
-    });
+    const orderId = Math.floor(100000 + Math.random() * 900000);
     clearCart();
+    navigate('/thank-you', { state: { orderId } });
   };
-
-  if (lastOrder) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-6 animate-fade-in">
-        <div className="bg-green-500/20 p-6 rounded-full text-green-500 mb-4">
-          <CheckCircle size={64} />
-        </div>
-        <h2 className="text-4xl font-bold text-white">Order Confirmed!</h2>
-        <p className="text-gray-400 text-lg">Thank you for your purchase. Your order <span className="text-primary font-bold">#{lastOrder.orderId}</span> is being prepared.</p>
-        
-        <div className="glass-panel p-6 text-left w-full max-w-lg mt-6">
-          <h3 className="text-xl font-bold mb-4 border-b border-white/10 pb-2">Order Details</h3>
-          <div className="space-y-3 mb-6 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
-            {lastOrder.items.map(item => (
-              <div key={item.id} className="flex justify-between text-sm">
-                <span className="text-gray-300">{item.quantity}x {item.title}</span>
-                <span className="text-white font-medium">₹{item.price * item.quantity}</span>
-              </div>
-            ))}
-          </div>
-          <div className="flex justify-between font-bold text-lg border-t border-white/10 pt-4">
-            <span className="text-primary">Amount Paid:</span>
-            <span>₹{lastOrder.total.toFixed(2)}</span>
-          </div>
-          <div className="text-xs text-gray-500 mt-2 text-center">Placed on {lastOrder.date}</div>
-        </div>
-
-        <button onClick={() => setLastOrder(null)} className="btn-secondary mt-8 px-8 py-3">
-          Place Another Order
-        </button>
-      </div>
-    );
-  }
 
   if (cart.length === 0) {
     return (
