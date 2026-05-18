@@ -10,9 +10,9 @@ const Navbar = () => {
   return (
     <nav className="glass-panel sticky top-0 z-50 rounded-none border-t-0 border-l-0 border-r-0 border-b border-white/10 print:hidden">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-        <Link to="/home" className="flex items-center gap-3 text-primary font-bold text-2xl tracking-wide z-50">
+        <Link to="/home" className="flex items-center gap-2 md:gap-3 text-primary font-bold tracking-wide z-50">
           <img src="/logo.jpg" alt="GK Food Flow Logo" className="h-10 md:h-12 w-auto object-contain rounded-full shadow-lg shadow-orange-500/20" />
-          <span className="hidden sm:inline">GK Food Flow</span>
+          <span className="text-xl md:text-2xl">GK Food Flow</span>
         </Link>
 
         {/* Mobile Menu Toggle Button */}
