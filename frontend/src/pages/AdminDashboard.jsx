@@ -5,12 +5,17 @@ const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [reservations, setReservations] = useState([]);
   const [menuItems, setMenuItems] = useState([]);
+  const [deletedItems, setDeletedItems] = useState([]);
   const [orders, setOrders] = useState([]);
   
   // New Item Form State
   const [newItem, setNewItem] = useState({
     title: '', category: 'Breakfast', price: '', isVeg: true, image: ''
   });
+
+  // Edit Price State
+  const [editingId, setEditingId] = useState(null);
+  const [editPrice, setEditPrice] = useState("");
 
   useEffect(() => {
     const savedRes = JSON.parse(localStorage.getItem('foodflow_reservations')) || [];
@@ -21,21 +26,58 @@ const AdminDashboard = () => {
 
     const savedOrders = JSON.parse(localStorage.getItem('foodflow_orders')) || [];
     setOrders(savedOrders.reverse());
+
+    const savedDeleted = JSON.parse(localStorage.getItem('foodflow_deleted_menu')) || [];
+    setDeletedItems(savedDeleted);
   }, []);
 
   const handleDeleteItem = (id) => {
+    const itemToDelete = menuItems.find(item => item.id === id);
+    if (!itemToDelete) return;
+    
     const updatedMenu = menuItems.filter(item => item.id !== id);
+    setMenuItems(updatedMenu);
+    localStorage.setItem('foodflow_menu', JSON.stringify(updatedMenu));
+    
+    const updatedDeleted = [itemToDelete, ...deletedItems];
+    setDeletedItems(updatedDeleted);
+    localStorage.setItem('foodflow_deleted_menu', JSON.stringify(updatedDeleted));
+  };
+
+  const handleRestoreItem = (id) => {
+    const itemToRestore = deletedItems.find(item => item.id === id);
+    if (!itemToRestore) return;
+    
+    const updatedDeleted = deletedItems.filter(item => item.id !== id);
+    setDeletedItems(updatedDeleted);
+    localStorage.setItem('foodflow_deleted_menu', JSON.stringify(updatedDeleted));
+    
+    const updatedMenu = [itemToRestore, ...menuItems];
     setMenuItems(updatedMenu);
     localStorage.setItem('foodflow_menu', JSON.stringify(updatedMenu));
   };
 
+  const handleEditClick = (item) => {
+    setEditingId(item.id);
+    setEditPrice(item.price);
+  };
+
+  const handleSavePrice = (id) => {
+    const updatedMenu = menuItems.map(item => {
+      if (item.id === id) {
+        return { ...item, price: Number(editPrice) };
+      }
+      return item;
+    });
+    setMenuItems(updatedMenu);
+    localStorage.setItem('foodflow_menu', JSON.stringify(updatedMenu));
+    setEditingId(null);
+  };
+
   const handleCancelReservation = (id) => {
-    if (window.confirm("Are you sure you want to cancel this reservation?")) {
-      const updatedReservations = reservations.filter(res => res.id !== id);
-      setReservations(updatedReservations);
-      // We must reverse it back before saving because our state is stored reversed
-      localStorage.setItem('foodflow_reservations', JSON.stringify([...updatedReservations].reverse()));
-    }
+    const updatedReservations = reservations.filter(res => res.id !== id);
+    setReservations(updatedReservations);
+    localStorage.setItem('foodflow_reservations', JSON.stringify([...updatedReservations].reverse()));
   };
 
   const handleAddItem = (e) => {
@@ -175,7 +217,14 @@ const AdminDashboard = () => {
                     reservations.map((res) => (
                       <tr key={res.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
                         <td className="py-3 px-4 text-white">#{res.id}</td>
-                        <td className="py-3 px-4 text-gray-300">{res.name}</td>
+                        <td className="py-3 px-4 text-gray-300">
+                          <div>{res.name}</div>
+                          {res.preBookedItems?.length > 0 && (
+                            <div className="text-xs text-[#eab308] mt-1">
+                              + Pre-ordered {res.preBookedItems.reduce((acc, item) => acc + item.quantity, 0)} items (₹{res.preBookTotal})
+                            </div>
+                          )}
+                        </td>
                         <td className="py-3 px-4 text-white font-medium">{res.date} at {res.time}</td>
                         <td className="py-3 px-4 text-gray-300">{res.guests}</td>
                         <td className="py-3 px-4">
@@ -237,38 +286,86 @@ const AdminDashboard = () => {
               </form>
             </div>
 
-            {/* Current Menu List */}
-            <div className="glass-panel p-6 border border-[#2a2d36] rounded-2xl">
-              <h3 className="text-xl font-bold text-white mb-4">Current Menu ({menuItems.length} items)</h3>
-              <div className="overflow-x-auto max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
-                <table className="w-full text-left border-collapse">
-                  <thead className="sticky top-0 bg-[#15161a] z-10">
-                    <tr className="border-b border-[#2a2d36] text-gray-400">
-                      <th className="py-3 px-4 font-medium">Image</th>
-                      <th className="py-3 px-4 font-medium">Title</th>
-                      <th className="py-3 px-4 font-medium">Category</th>
-                      <th className="py-3 px-4 font-medium">Price</th>
-                      <th className="py-3 px-4 font-medium">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {menuItems.map((item) => (
-                      <tr key={item.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
-                        <td className="py-2 px-4">
-                          <img src={item.image} alt={item.title} className="w-10 h-10 rounded object-cover" onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=100&q=80'; }} />
-                        </td>
-                        <td className="py-3 px-4 text-white">{item.title} {item.isVeg ? <span className="text-green-500 text-xs ml-1">●</span> : <span className="text-red-500 text-xs ml-1">●</span>}</td>
-                        <td className="py-3 px-4 text-gray-300">{item.category}</td>
-                        <td className="py-3 px-4 text-[#eab308] font-medium">₹{item.price}</td>
-                        <td className="py-3 px-4">
-                          <button onClick={() => handleDeleteItem(item.id)} className="text-red-500 hover:text-red-400 hover:bg-red-500/10 p-2 rounded transition-colors">
-                            <Trash2 size={18} />
-                          </button>
-                        </td>
+            <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+              {/* Current Menu List */}
+              <div className="xl:col-span-2 glass-panel p-6 border border-[#2a2d36] rounded-2xl">
+                <h3 className="text-xl font-bold text-white mb-4">Current Menu ({menuItems.length} items)</h3>
+                <div className="overflow-x-auto max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
+                  <table className="w-full text-left border-collapse">
+                    <thead className="sticky top-0 bg-[#15161a] z-10">
+                      <tr className="border-b border-[#2a2d36] text-gray-400">
+                        <th className="py-3 px-4 font-medium">Image</th>
+                        <th className="py-3 px-4 font-medium">Title</th>
+                        <th className="py-3 px-4 font-medium">Category</th>
+                        <th className="py-3 px-4 font-medium">Price</th>
+                        <th className="py-3 px-4 font-medium">Action</th>
                       </tr>
+                    </thead>
+                    <tbody>
+                      {menuItems.map((item) => (
+                        <tr key={item.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                          <td className="py-2 px-4">
+                            <img src={item.image} alt={item.title} className="w-10 h-10 rounded object-cover" onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=100&q=80'; }} />
+                          </td>
+                          <td className="py-3 px-4 text-white">{item.title} {item.isVeg ? <span className="text-green-500 text-xs ml-1">●</span> : <span className="text-red-500 text-xs ml-1">●</span>}</td>
+                          <td className="py-3 px-4 text-gray-300">{item.category}</td>
+                          <td className="py-3 px-4 text-[#eab308] font-medium">
+                            {editingId === item.id ? (
+                              <input 
+                                type="number" 
+                                value={editPrice}
+                                onChange={(e) => setEditPrice(e.target.value)}
+                                className="w-20 bg-[#1e2128] border border-[#2a2d36] rounded px-2 py-1 text-white focus:border-[#eab308] outline-none"
+                                autoFocus
+                              />
+                            ) : (
+                              `₹${item.price}`
+                            )}
+                          </td>
+                          <td className="py-3 px-4 flex gap-2">
+                            {editingId === item.id ? (
+                              <button onClick={() => handleSavePrice(item.id)} className="text-green-500 hover:text-green-400 hover:bg-green-500/10 px-3 py-1 rounded transition-colors text-sm font-medium">
+                                Save
+                              </button>
+                            ) : (
+                              <button onClick={() => handleEditClick(item)} className="text-blue-500 hover:text-blue-400 hover:bg-blue-500/10 p-2 rounded transition-colors" title="Edit Price">
+                                <Edit size={18} />
+                              </button>
+                            )}
+                            <button onClick={() => handleDeleteItem(item.id)} className="text-red-500 hover:text-red-400 hover:bg-red-500/10 p-2 rounded transition-colors" title="Delete Item">
+                              <Trash2 size={18} />
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Deleted Items List */}
+              <div className="xl:col-span-1 glass-panel p-6 border border-[#2a2d36] rounded-2xl">
+                <h3 className="text-xl font-bold text-white mb-4">Deleted Items ({deletedItems.length})</h3>
+                {deletedItems.length === 0 ? (
+                  <p className="text-gray-400 text-sm">No deleted items.</p>
+                ) : (
+                  <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
+                    {deletedItems.map(item => (
+                      <div key={item.id} className="bg-[#15161a] p-3 rounded-lg border border-[#2a2d36] flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                           <img src={item.image} alt={item.title} className="w-10 h-10 rounded object-cover" onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=100&q=80'; }} />
+                           <div>
+                             <p className="text-white text-sm font-medium line-clamp-1">{item.title}</p>
+                             <p className="text-[#eab308] text-xs font-bold">₹{item.price}</p>
+                           </div>
+                        </div>
+                        <button onClick={() => handleRestoreItem(item.id)} className="text-green-500 hover:text-green-400 hover:bg-green-500/10 px-3 py-1 rounded transition-colors text-xs font-medium border border-green-500/20 whitespace-nowrap">
+                          Restore
+                        </button>
+                      </div>
                     ))}
-                  </tbody>
-                </table>
+                  </div>
+                )}
               </div>
             </div>
           </div>

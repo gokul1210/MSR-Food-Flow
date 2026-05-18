@@ -14,6 +14,10 @@ const TableBooking = () => {
   const [isBooked, setIsBooked] = useState(false);
   const [recentBookings, setRecentBookings] = useState([]);
   const [bookedTables, setBookedTables] = useState([]);
+  
+  // Pre-book state
+  const [availableMenu, setAvailableMenu] = useState([]);
+  const [preBookedItems, setPreBookedItems] = useState([]);
 
   const tables = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
@@ -21,10 +25,33 @@ const TableBooking = () => {
     const saved = JSON.parse(localStorage.getItem('foodflow_reservations')) || [];
     setRecentBookings(saved.reverse().slice(0, 5));
     
-    // Extract table IDs from all active reservations to mark them as booked
     const bookedIds = saved.map(res => parseInt(res.tableId)).filter(id => !isNaN(id));
     setBookedTables(bookedIds);
+
+    const savedMenu = JSON.parse(localStorage.getItem('foodflow_menu')) || [];
+    setAvailableMenu(savedMenu);
   }, [isBooked]);
+
+  const handleAddPreBook = (item) => {
+    const existing = preBookedItems.find(i => i.id === item.id);
+    if (existing) {
+      setPreBookedItems(preBookedItems.map(i => i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i));
+    } else {
+      setPreBookedItems([...preBookedItems, { ...item, quantity: 1 }]);
+    }
+  };
+
+  const handleRemovePreBook = (id) => {
+    const existing = preBookedItems.find(i => i.id === id);
+    if (!existing) return;
+    if (existing.quantity === 1) {
+      setPreBookedItems(preBookedItems.filter(i => i.id !== id));
+    } else {
+      setPreBookedItems(preBookedItems.map(i => i.id === id ? { ...i, quantity: i.quantity - 1 } : i));
+    }
+  };
+
+  const preBookTotal = preBookedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -48,7 +75,9 @@ const TableBooking = () => {
       tableId: selectedTable,
       id: Math.floor(1000 + Math.random() * 9000),
       status: 'Confirmed',
-      timestamp: new Date().toLocaleString()
+      timestamp: new Date().toLocaleString(),
+      preBookedItems: preBookedItems,
+      preBookTotal: preBookTotal
     };
     
     const existingReservations = JSON.parse(localStorage.getItem('foodflow_reservations')) || [];
@@ -64,13 +93,33 @@ const TableBooking = () => {
           <CheckCircle size={72} />
         </div>
         <h1 className="text-4xl font-bold text-white mb-2">Reservation Confirmed!</h1>
-        <p className="text-gray-400 text-lg mb-8">
+        <p className="text-gray-400 text-lg mb-4">
           Thank you, {formData.name}. Table {selectedTable} for {formData.guests} has been booked for {formData.date} at {formData.time}.
         </p>
+        
+        {preBookedItems.length > 0 && (
+          <div className="bg-[#1a1c23] p-6 rounded-xl border border-[#2a2d36] mb-6 w-full max-w-md mx-auto text-left shadow-lg">
+            <h3 className="text-white font-bold mb-4 text-lg border-b border-[#2a2d36] pb-2">Pre-Booked Menu</h3>
+            <div className="space-y-3">
+              {preBookedItems.map(item => (
+                <div key={item.id} className="flex justify-between text-sm text-gray-300 items-center">
+                  <span><span className="text-[#eab308] font-bold mr-2">{item.quantity}x</span> {item.title}</span>
+                  <span className="font-medium">₹{item.price * item.quantity}</span>
+                </div>
+              ))}
+              <div className="border-t border-[#2a2d36] pt-3 mt-4 flex justify-between font-bold text-white text-lg">
+                <span>Total Food Cost</span>
+                <span className="text-[#eab308]">₹{preBookTotal}</span>
+              </div>
+            </div>
+          </div>
+        )}
+
         <button 
           onClick={() => {
             setIsBooked(false);
             setSelectedTable(null);
+            setPreBookedItems([]);
           }} 
           className="btn-primary px-8 py-3 bg-gradient-to-r from-[#eab308] to-[#f97316] text-black border-none hover:scale-105 transition-transform"
         >
@@ -244,6 +293,56 @@ const TableBooking = () => {
           </div>
         </div>
 
+      </div>
+
+      {/* Menu Pre-booking Section */}
+      <div className="mt-8 glass-panel p-8 bg-[#15161a] border-[#2a2d36] rounded-2xl shadow-2xl animate-fade-in">
+        <h2 className="text-2xl font-bold text-white mb-6 font-serif">Pre-Book Your Meal (Optional)</h2>
+        <div className="w-full h-[1px] bg-[#2a2d36] mb-6"></div>
+        <div className="flex flex-col lg:flex-row gap-8">
+          
+          <div className="flex-1 max-h-[400px] overflow-y-auto pr-4 custom-scrollbar space-y-3">
+            {availableMenu.map(item => {
+              const qty = preBookedItems.find(i => i.id === item.id)?.quantity || 0;
+              return (
+                <div key={item.id} className="flex justify-between items-center bg-[#1e2128] p-3 rounded-lg border border-[#2a2d36]">
+                  <div className="flex items-center gap-4">
+                    <img src={item.image} alt={item.title} className="w-14 h-14 rounded-lg object-cover shadow-md" onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=100&q=80'; }} />
+                    <div>
+                      <p className="text-white font-medium text-lg">{item.title}</p>
+                      <p className="text-[#eab308] font-bold">₹{item.price}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 bg-[#15161a] rounded-full px-3 py-1.5 border border-[#2a2d36]">
+                    <button type="button" onClick={() => handleRemovePreBook(item.id)} className="w-8 h-8 rounded-full bg-[#2a2d36] text-white flex items-center justify-center hover:bg-gray-600 transition-colors text-lg">-</button>
+                    <span className="text-white w-6 text-center font-bold">{qty}</span>
+                    <button type="button" onClick={() => handleAddPreBook(item)} className="w-8 h-8 rounded-full bg-[#eab308] text-black font-bold flex items-center justify-center hover:bg-yellow-400 transition-colors text-lg">+</button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="w-full lg:w-96 bg-[#1e2128] border border-[#2a2d36] rounded-xl p-6 h-fit sticky top-24">
+            <h3 className="text-white font-bold mb-4 border-b border-[#2a2d36] pb-3 text-xl">Your Pre-Order</h3>
+            {preBookedItems.length === 0 ? (
+              <p className="text-gray-500 text-center py-6">No items selected.</p>
+            ) : (
+              <div className="space-y-4">
+                {preBookedItems.map(item => (
+                  <div key={item.id} className="flex justify-between text-sm text-gray-300 items-center">
+                    <span><span className="text-[#eab308] font-bold mr-2">{item.quantity}x</span> {item.title}</span>
+                    <span className="font-medium">₹{item.price * item.quantity}</span>
+                  </div>
+                ))}
+                <div className="border-t border-[#2a2d36] pt-4 mt-4 flex justify-between font-bold text-white text-xl">
+                  <span>Total</span>
+                  <span className="text-[#eab308]">₹{preBookTotal}</span>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
       {recentBookings.length > 0 && (

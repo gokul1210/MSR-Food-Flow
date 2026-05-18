@@ -26,45 +26,51 @@ const ThankYou = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[70vh] space-y-6 animate-fade-in max-w-3xl mx-auto px-4 print:py-0 print:space-y-2">
+    <div className="flex flex-col items-center justify-center min-h-[70vh] space-y-6 animate-fade-in max-w-3xl mx-auto px-4 print:block print:min-h-0 print:m-0 print:p-0 print:space-y-1">
       
       {!submitted ? (
         <>
           <div className="bg-green-500/20 p-6 rounded-full text-green-500 mb-2 animate-bounce-slow print:hidden">
             <CheckCircle size={72} />
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-2 text-center print:text-black">Order Confirmed!</h1>
-          <p className="text-gray-400 text-lg mb-4 text-center print:text-black">
+          <div className="hidden print:flex flex-col items-center justify-center mb-4">
+            <img src="/logo.jpg" alt="GK Food Flow" className="h-16 w-auto object-contain rounded-full mb-2" />
+            <span className="font-bold text-2xl text-black">GK Food Flow</span>
+          </div>
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-2 text-center print:text-black print:text-xl print:mb-0">Order Confirmed!</h1>
+          <p className="text-gray-400 text-lg mb-4 text-center print:text-black print:text-sm print:mb-1">
             Thank you for your purchase.<br />
             Order <span className="text-primary font-bold print:text-black">#{orderId}</span>
           </p>
 
           {/* Bill Section */}
           {orderData && (
-            <div className="glass-panel p-8 w-full print:bg-white print:border-none print:shadow-none print:text-black print:p-0">
-              <div className="flex justify-between items-center mb-6 border-b border-white/10 pb-4 print:border-black">
-                <h2 className="text-2xl font-bold text-white print:text-black">Official Bill</h2>
-                <button 
-                  onClick={handlePrint}
-                  className="flex items-center gap-2 bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg transition-colors print:hidden"
-                >
-                  <Printer size={18} /> Print Bill
-                </button>
+            <div className="glass-panel p-8 w-full print:bg-white print:border-none print:shadow-none print:text-black print:p-0 print:text-xs">
+              <div className="flex flex-col mb-6 border-b border-white/10 pb-4 print:mb-2 print:pb-2 print:border-black">
+                <div className="flex justify-between items-center">
+                  <h2 className="text-2xl font-bold text-white print:text-black print:text-lg">Official Bill</h2>
+                  <button 
+                    onClick={handlePrint}
+                    className="flex items-center gap-2 bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg transition-colors print:hidden"
+                  >
+                    <Printer size={18} /> Print Bill
+                  </button>
+                </div>
               </div>
 
-              <div className="space-y-4 mb-6">
+              <div className="space-y-4 mb-6 print:space-y-1 print:mb-2">
                 {orderData.items.map(item => (
-                  <div key={item.id} className="flex justify-between items-center border-b border-white/5 pb-2 print:border-gray-300">
+                  <div key={item.id} className="flex justify-between items-center border-b border-white/5 pb-2 print:pb-1 print:border-gray-300">
                     <div>
                       <span className="font-bold print:text-black">{item.title}</span>
-                      <span className="text-gray-400 text-sm ml-2 print:text-gray-600">x{item.quantity}</span>
+                      <span className="text-gray-400 text-sm ml-2 print:text-gray-600 print:text-xs">x{item.quantity}</span>
                     </div>
                     <span className="font-medium print:text-black">₹{item.price * item.quantity}</span>
                   </div>
                 ))}
               </div>
 
-              <div className="space-y-2 text-gray-300 print:text-black">
+              <div className="space-y-2 text-gray-300 print:text-black print:space-y-1">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
                   <span>₹{orderData.subtotal.toFixed(2)}</span>
@@ -73,12 +79,12 @@ const ThankYou = () => {
                   <span>GST (5%)</span>
                   <span>₹{orderData.tax.toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between pt-4 border-t border-white/10 font-bold text-xl text-white print:border-black print:text-black">
+                <div className="flex justify-between pt-4 print:pt-2 border-t border-white/10 font-bold text-xl print:text-base text-white print:border-black print:text-black">
                   <span>Grand Total</span>
                   <span className="text-primary print:text-black">₹{orderData.grandTotal.toFixed(2)}</span>
                 </div>
               </div>
-              <div className="text-center text-sm text-gray-500 mt-6 print:text-gray-600">
+              <div className="text-center text-sm text-gray-500 mt-6 print:mt-4 print:text-xs print:text-gray-600">
                 Date: {orderData.date}
               </div>
             </div>
